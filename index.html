@@ -1389,7 +1389,7 @@
                 let readableCategory = item.category.replace('_', ' ');
 
                 let fineDisplay = item.fine === 999999 ? "Judicial Discretion" : `$${item.fine.toLocaleString()}`;
-                let jailDisplay = item.jailTime === 999999 || item.jailTime === 9999999 || item.jailTime === 99999999 ? "H.U.T" : `${item.jailTime} Mos`;
+                let jailDisplay = item.jailTime === 999999 || item.jailTime === 9999999 || item.jailTime === 99999999 ? "H.U.T" : `${item.jailTime} Months`;
 
                 tr.innerHTML = `
                     <td style="font-weight:600; color:#fff">${item.label}</td>
