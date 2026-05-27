@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual MDT — Dispatch Terminal</title>
+    <title>Virtual MDT</title>
     <link rel="icon" type="image/png" href="./assets/logo.png">
     <style>
         :root {
@@ -38,6 +38,69 @@
             display: flex; 
             flex-direction: column; 
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ELEGANT RADAR PRELOADER SYSTEM OVERLAY */
+        #appPreloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-primary);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s;
+        }
+        
+        .radar-spinner {
+            width: 64px;
+            height: 64px;
+            position: relative;
+            background: rgba(59, 130, 246, 0.03);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+        }
+        .radar-spinner::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border: 2px solid transparent;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spinRadar 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        
+        .preloader-text {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            animation: pulseText 1.5s ease-in-out infinite;
+        }
+
+        /* Main application container state framework */
+        #mainAppContent {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        @keyframes spinRadar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; color: #fff; }
         }
 
         /* Custom Scrollbar */
@@ -204,7 +267,7 @@
             flex: 1;
             padding: 20px;
             margin-top: var(--header-mobile-height);
-            margin-bottom: 85px; /* Leave space for floating bar on mobile */
+            margin-bottom: 85px; 
             width: 100%;
         }
         
@@ -249,7 +312,7 @@
             padding: 15px 20px; 
             z-index: 101;
             box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
-            max-height: 70px; /* Collapsed view showing stats at a glance */
+            max-height: 70px; 
             overflow: hidden;
             transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -378,93 +441,100 @@
 </head>
 <body>
 
-    <div class="app-container">
-        <header>
-            <h1>
-                <img src="./assets/logo.png" alt="MDT Logo" class="mdt-logo">
-                Virtual MDT
-            </h1>
-            <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()" aria-label="Toggle Navigation Drawer">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </header>
+    <!-- VISUAL PRELOADER SCREEN OVERLAY CONTAINER -->
+    <div id="appPreloader">
+        <div class="radar-spinner"></div>
+        <div class="preloader-text" id="preloaderText">Syncing MDT Core Database...</div>
+    </div>
 
-        <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-        <nav class="sidebar" id="sidebarMenu">
-            <div class="sidebar-header">
+    <!-- MAIN APPLICATION CONTAINER WRAPPER -->
+    <div id="mainAppContent">
+        <div class="app-container">
+            <header>
                 <h1>
                     <img src="./assets/logo.png" alt="MDT Logo" class="mdt-logo">
                     Virtual MDT
                 </h1>
-            </div>
-            <div class="nav-menu">
-                <button class="tab-btn active" onclick="switchTab('charge-sheet')">CHARGE SHEET</button>
-                <button class="tab-btn" onclick="switchTab('penal-codes')">PENAL CODES DIRECTORY</button>
-            </div>
-        </nav>
+                <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()" aria-label="Toggle Navigation Drawer">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </header>
 
-        <main>
-            <!-- Charge Sheet Tab Panel -->
-            <div id="charge-sheet" class="tab-content active">
-                <div class="calculator-layout">
-                    <div class="robbery-grid" id="robberyGrid">
-                        <p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 30px 0; width: 100%;">Loading configuration assets...</p>
-                    </div>
-
-                    <!-- Optimized Booking Summary Bottom Sheet System -->
-                    <div class="basket-panel" id="summaryPanel">
-                        <div class="basket-header-toggle" onclick="toggleSummaryPanel()">
-                            <div class="basket-title">Booking Summary</div>
-                        </div>
-                        <div class="basket-items" id="basketItems">
-                            <p style="color: var(--text-muted); font-size: 13px; text-align: center; padding-top: 30px;">No operational presets loaded</p>
-                        </div>
-                        <div class="totals">
-                            <div class="total-row"><span>Fine:</span><span id="summaryFine">$0</span></div>
-                            <div class="total-row"><span>Time:</span><span id="summaryTime">0 Months</span></div>
-                            <div class="total-row grand-total"><span>Cap:</span><span id="summaryCap">N/A</span></div>
-                        </div>
-                    </div>
+            <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+            <nav class="sidebar" id="sidebarMenu">
+                <div class="sidebar-header">
+                    <h1>
+                        <img src="./assets/logo.png" alt="MDT Logo" class="mdt-logo">
+                        Virtual MDT
+                    </h1>
                 </div>
-            </div>
+                <div class="nav-menu">
+                    <button class="tab-btn active" onclick="switchTab('charge-sheet')">CHARGE SHEET</button>
+                    <button class="tab-btn" onclick="switchTab('penal-codes')">PENAL CODES DIRECTORY</button>
+                </div>
+            </nav>
 
-            <!-- Penal Codes Tab Panel -->
-            <div id="penal-codes" class="tab-content">
-                <div class="filter-bar">
-                    <input type="text" id="searchBox" class="search-box" placeholder="Search parameters or data metrics..." oninput="filterTable()">
-                    <div class="filter-buttons-scroll">
-                        <button class="filter-btn active" onclick="filterCategory('all', this)">All Codes</button>
-                        <button class="filter-btn" onclick="filterCategory('traffic', this)">Traffic</button>
-                        <button class="filter-btn" onclick="filterCategory('infraction', this)">Infraction</button>
-                        <button class="filter-btn" onclick="filterCategory('misdemeanor', this)">Misdemeanor</button>
-                        <button class="filter-btn" onclick="filterCategory('felony', this)">Felony</button>
-                        <button class="filter-btn" onclick="filterCategory('hut', this)">H.U.T</button>
-                        <button class="filter-btn" onclick="filterCategory('internal_affairs', this)">Internal Affairs</button>
+            <main>
+                <!-- Charge Sheet Tab Panel -->
+                <div id="charge-sheet" class="tab-content active">
+                    <div class="calculator-layout">
+                        <div class="robbery-grid" id="robberyGrid"></div>
+
+                        <!-- Optimized Booking Summary Bottom Sheet System -->
+                        <div class="basket-panel" id="summaryPanel">
+                            <div class="basket-header-toggle" onclick="toggleSummaryPanel()">
+                                <div class="basket-title">Booking Summary</div>
+                            </div>
+                            <div class="basket-items" id="basketItems">
+                                <p style="color: var(--text-muted); font-size: 13px; text-align: center; padding-top: 30px;">No operational presets loaded</p>
+                            </div>
+                            <div class="totals">
+                                <div class="total-row"><span>Fine:</span><span id="summaryFine">$0</span></div>
+                                <div class="total-row"><span>Time:</span><span id="summaryTime">0 Months</span></div>
+                                <div class="total-row grand-total"><span>Cap:</span><span id="summaryCap">N/A</span></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width: 25%">Offense</th>
-                                <th style="width: 15%">Classification</th>
-                                <th style="width: 42%">Statutory Definition</th>
-                                <th style="width: 10%">Fine</th>
-                                <th style="width: 8%">Jail Metric</th>
-                            </tr>
-                        </thead>
-                        <tbody id="penalCodesTableBody">
-                            <tr>
-                                <td colspan="5" style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 30px 0;">Loading legal code indexes...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- Penal Codes Tab Panel -->
+                <div id="penal-codes" class="tab-content">
+                    <div class="filter-bar">
+                        <input type="text" id="searchBox" class="search-box" placeholder="Search parameters or data metrics..." oninput="filterTable()">
+                        <div class="filter-buttons-scroll">
+                            <button class="filter-btn active" onclick="filterCategory('all', this)">All Codes</button>
+                            <button class="filter-btn" onclick="filterCategory('traffic', this)">Traffic</button>
+                            <button class="filter-btn" onclick="filterCategory('infraction', this)">Infraction</button>
+                            <button class="filter-btn" onclick="filterCategory('misdemeanor', this)">Misdemeanor</button>
+                            <button class="filter-btn" onclick="filterCategory('felony', this)">Felony</button>
+                            <button class="filter-btn" onclick="filterCategory('hut', this)">H.U.T</button>
+                            <button class="filter-btn" onclick="filterCategory('internal_affairs', this)">Internal Affairs</button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%">Offense</th>
+                                    <th style="width: 15%">Classification</th>
+                                    <th style="width: 42%">Statutory Definition</th>
+                                    <th style="width: 10%">Fine</th>
+                                    <th style="width: 8%">Jail Metric</th>
+                                </tr>
+                            </thead>
+                            <tbody id="penalCodesTableBody">
+                                <tr>
+                                    <td colspan="5" style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 30px 0;">Loading legal code indexes...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
 
     <script>
@@ -483,6 +553,7 @@
             const baseUrl = getBaseUrl();
             
             try {
+                // parallel layout asset compilation pipeline fetching operations
                 const [chargesResponse, penalCodesResponse] = await Promise.all([
                     fetch(`${baseUrl}chargesPresets.json`),
                     fetch(`${baseUrl}penalCodes.json`)
@@ -495,12 +566,22 @@
                 chargeSheetGroups = await chargesResponse.json();
                 penalCodes = await penalCodesResponse.json();
 
+                // Run baseline card injections
                 renderChargeSheetGrid();
                 renderPenalCodesTable();
 
+                // UNROLL RENDERING VIEWS ONCE PIPELINE PROMISES COMPLETE CLEANLY
+                const preloader = document.getElementById('appPreloader');
+                const content = document.getElementById('mainAppContent');
+                
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+                content.style.opacity = '1';
+
             } catch (error) {
                 console.error("Data Fetch Error:", error);
-                document.getElementById('robberyGrid').innerHTML = `<p style="color: var(--danger); font-size: 13px; text-align: center; width: 100%;">Error loading: ${error.message}</p>`;
+                document.getElementById('preloaderText').innerText = `Sync Failed: ${error.message}`;
+                document.getElementById('preloaderText').style.color = 'var(--danger)';
             }
         };
 
@@ -514,9 +595,8 @@
             toggleBtn.classList.toggle('open');
         }
 
-        // Toggle Expand state for mobile summary bottom card
         function toggleSummaryPanel() {
-            if (window.innerWidth >= 992) return; // Ignore on desktop
+            if (window.innerWidth >= 992) return; 
             const panel = document.getElementById('summaryPanel');
             panel.classList.toggle('expanded');
         }
@@ -527,7 +607,6 @@
                 toggleSidebar();
             }
 
-            // Close booking summary popup if active when changing screens
             document.getElementById('summaryPanel').classList.remove('expanded');
 
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -587,7 +666,6 @@
             document.getElementById('summaryTime').innerText = `${accumulatedTime} Months`;
             document.getElementById('summaryCap').innerText = `$${group.capFine.toLocaleString()} / ${group.capTime} Months`;
 
-            // Open the mobile summary sheet automatically when a preset is loaded
             if (window.innerWidth < 992) {
                 document.getElementById('summaryPanel').classList.add('expanded');
             }
