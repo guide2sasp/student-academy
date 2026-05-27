@@ -76,7 +76,23 @@
             height: var(--header-mobile-height);
             z-index: 100;
         }
-        header h1 { font-size: 16px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #fff; }
+        header h1 { 
+            font-size: 16px; 
+            font-weight: 700; 
+            letter-spacing: 1px; 
+            text-transform: uppercase; 
+            color: #fff; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Brand Logo Style Optimization */
+        .mdt-logo {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
 
         /* Mobile Hamburger Icon Setup */
         .menu-toggle {
@@ -139,6 +155,10 @@
             letter-spacing: 1.5px;
             text-transform: uppercase;
             color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         .nav-menu {
@@ -255,6 +275,7 @@
             color: var(--accent);
             text-transform: none;
             font-weight: normal;
+            box-shadow: none;
         }
         .basket-panel.expanded .basket-title::after { content: '▼ Close panel'; }
 
@@ -324,7 +345,7 @@
             }
             .sidebar::before { display: none; }
             .sidebar-header { display: block; padding: 24px 20px; text-align: left; border-bottom: 1px solid var(--border-color); }
-            .sidebar-header h1 { font-size: 16px; color: #fff; }
+            .sidebar-header h1 { font-size: 16px; color: #fff; justify-content: flex-start; }
 
             .nav-menu { padding: 20px 12px; gap: 6px; flex: 1; overflow-y: auto; }
             .tab-btn { background: transparent; border: none; padding: 14px 16px; font-size: 13px; text-align: left; border-radius: 8px; }
@@ -358,7 +379,10 @@
 
     <div class="app-container">
         <header>
-            <h1>Virtual MDT</h1>
+            <h1>
+                <img src="./assets/logo.png" alt="MDT Logo" class="mdt-logo">
+                Virtual MDT
+            </h1>
             <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()" aria-label="Toggle Navigation Drawer">
                 <span></span>
                 <span></span>
@@ -369,7 +393,10 @@
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
         <nav class="sidebar" id="sidebarMenu">
             <div class="sidebar-header">
-                <h1>Virtual MDT</h1>
+                <h1>
+                    <img src="./assets/logo.png" alt="MDT Logo" class="mdt-logo">
+                    Virtual MDT
+                </h1>
             </div>
             <div class="nav-menu">
                 <button class="tab-btn active" onclick="switchTab('charge-sheet')">CHARGE SHEET</button>
