@@ -98,58 +98,74 @@
             transition: transform 0.2s ease, opacity 0.2s ease;
         }
 
-        /* Sidebar Drawer Design */
+        /* Mobile Bottom Sheet Drawer Layout Framework */
         .sidebar {
             position: fixed;
-            top: 0;
-            left: calc(-1 * var(--sidebar-width));
-            width: var(--sidebar-width);
-            height: 100vh;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            /* Hidden initially below the viewport bounds */
+            transform: translateY(100%);
+            width: 100%;
+            height: auto;
+            max-height: 45vh; 
             background: var(--bg-secondary);
-            border-right: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-color);
+            border-radius: 20px 20px 0 0;
             display: flex;
             flex-direction: column;
             z-index: 105;
-            transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 -8px 24px -4px rgba(0, 0, 0, 0.5);
+            padding-bottom: env(safe-area-inset-bottom);
         }
-        .sidebar.open { left: 0; }
+        .sidebar.open { transform: translateY(0); }
+
+        /* Elegant Touch Bar Drag Indicator handle for Mobile popups */
+        .sidebar::before {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 2px;
+            margin: 12px auto 6px auto;
+        }
+
         .sidebar-header {
-            padding: 24px 20px;
-            display: none; 
+            padding: 10px 20px 15px 20px;
+            text-align: center;
         }
         .sidebar-header h1 {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 800;
             letter-spacing: 1.5px;
             text-transform: uppercase;
-            color: #fff;
-            padding-bottom: 10px;
+            color: var(--text-muted);
         }
         
         .nav-menu {
-            padding: 20px 12px;
+            padding: 10px 20px 24px 20px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            overflow-y: auto;
-            flex: 1;
+            gap: 10px;
         }
         .tab-btn {
-            background: transparent;
-            border: none;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
             color: var(--text-muted);
-            padding: 14px 16px;
-            font-size: 13px;
+            padding: 16px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 12px;
             transition: all 0.2s ease;
-            text-align: left;
+            text-align: center;
             white-space: nowrap;
             letter-spacing: 0.5px;
         }
         .tab-btn:hover { color: var(--text-main); background: var(--bg-tertiary); }
-        .tab-btn.active { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-left: 3px solid var(--accent); border-radius: 4px 8px 8px 4px; padding-left: 13px; }
+        .tab-btn.active { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid var(--accent); }
 
         /* Dark Fog Backdrop Overlay */
         .sidebar-overlay {
@@ -243,19 +259,58 @@
         .badge-hut { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.2); }
         .badge-internal-affairs { background: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.2); }
 
-        /* Animation States for Hamburger Menu Drawer */
+        /* Animation States for Hamburger Menu Drawer Toggle */
         .menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
         .menu-toggle.open span:nth-child(2) { opacity: 0; }
         .menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-        /* Responsive Configuration Adaptive Hooks Trigger */
+        /* Responsive Configuration Adaptive Responsive Layout Configuration Trigger (>= 992px) */
         @media (min-width: 992px) {
             header { display: none; }
             .menu-toggle { display: none; }
             .sidebar-overlay { display: none !important; }
 
-            .sidebar { left: 0 !important; width: var(--sidebar-width); }
-            .sidebar-header { display: block; border-bottom: 1px solid var(--border-color); }
+            /* Revert back to elegant desktop standard side navbar panel */
+            .sidebar { 
+                top: 0;
+                bottom: 0;
+                left: 0 !important; 
+                right: auto;
+                transform: none !important;
+                width: var(--sidebar-width); 
+                height: 100vh;
+                max-height: none;
+                border-top: none;
+                border-right: 1px solid var(--border-color);
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .sidebar::before { display: none; }
+            .sidebar-header { display: block; padding: 24px 20px; text-align: left; border-bottom: 1px solid var(--border-color); }
+            .sidebar-header h1 { font-size: 16px; color: #fff; }
+
+            .nav-menu {
+                padding: 20px 12px;
+                gap: 6px;
+                flex: 1;
+                overflow-y: auto;
+            }
+            .tab-btn {
+                background: transparent;
+                border: none;
+                padding: 14px 16px;
+                font-size: 13px;
+                text-align: left;
+                border-radius: 8px;
+            }
+            .tab-btn.active { 
+                background: rgba(59, 130, 246, 0.15); 
+                color: #60a5fa; 
+                border-left: 3px solid var(--accent); 
+                border-radius: 4px 8px 8px 4px; 
+                padding-left: 13px;
+                border-top: none; border-bottom: none; border-right: none;
+            }
 
             main {
                 margin-left: var(--sidebar-width);
@@ -298,6 +353,7 @@
         </nav>
 
         <main>
+            <!-- Charge Sheet Tab Panel -->
             <div id="charge-sheet" class="tab-content active">
                 <div class="calculator-layout">
                     <div class="robbery-grid" id="robberyGrid">
@@ -318,6 +374,7 @@
                 </div>
             </div>
 
+            <!-- Penal Codes Tab Panel -->
             <div id="penal-codes" class="tab-content">
                 <div class="filter-bar">
                     <input type="text" id="searchBox" class="search-box" placeholder="Search parameters or data metrics..." oninput="filterTable()">
@@ -355,24 +412,21 @@
     </div>
 
     <script>
-        // Global variables populated dynamically by asynchronous Fetch APIs
         let chargeSheetGroups = {};
         let penalCodes = {};
         let currentCategoryFilter = 'all';
 
-        // Absolute Base URL normalization layer logic for GitHub Pages asset routing stability
         const getBaseUrl = () => {
             if (window.location.hostname.includes("github.io")) {
                 return "https://ayazpatel.github.io/SCRP-VIRTUAL-MDT/";
             }
-            return "./"; // Fallback rule handling local live-server deployment scenarios seamlessly
+            return "./"; 
         };
 
         window.onload = async function() {
             const baseUrl = getBaseUrl();
             
             try {
-                // Execute parallel descriptive content calls across structural JSON files
                 const [chargesResponse, penalCodesResponse] = await Promise.all([
                     fetch(`${baseUrl}chargesPresets.json`),
                     fetch(`${baseUrl}penalCodes.json`)
@@ -385,7 +439,6 @@
                 chargeSheetGroups = await chargesResponse.json();
                 penalCodes = await penalCodesResponse.json();
 
-                // Fire rendering updates on data array resolution hook
                 renderChargeSheetGrid();
                 renderPenalCodesTable();
 
@@ -407,6 +460,7 @@
 
         function switchTab(tabId) {
             const sidebar = document.getElementById('sidebarMenu');
+            // If side drawer bottom sheet is currently slid up open, pull it back down on tab select
             if (sidebar.classList.contains('open')) {
                 toggleSidebar();
             }
