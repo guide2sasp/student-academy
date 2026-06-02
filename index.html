@@ -14,7 +14,7 @@
             --bg-pill: #e5e5ea;                 /* Secondary Interaction Elements */
             
             --text-main: #000000;               /* Primary Label */
-            --text-secondary: #3c3c43;          /* Secondary Label (60% alpha feel) */
+            --text-secondary: #3c3c43;          /* Secondary Label */
             --text-muted: #8e8e93;              /* iOS System Gray */
             
             /* PURE WHITE / MONOCHROME SYSTEM LIGHT TRANSITION */
@@ -273,19 +273,13 @@
         /* Layout Management */
         .calculator-layout { display: flex; flex-direction: column; gap: 20px; }
         
-        /* MOBILE HORIZONTAL RESPONSIVENESS SYSTEM */
+        /* FIXED VERTICAL LAYOUT FOR MOBILE PRESETS */
         .robbery-grid { 
             display: flex; 
-            flex-direction: row; 
-            gap: 14px; 
+            flex-direction: column; 
+            gap: 12px; 
             width: 100%; 
-            overflow-x: auto; 
-            padding: 4px 4px 16px 4px;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Hide scrollbar for clean native app look */
         }
-        .robbery-grid::-webkit-scrollbar { display: none; }
         
         /* Modernized iOS Borderless Interactive Cards */
         .card { 
@@ -297,10 +291,7 @@
             flex-direction: column; 
             justify-content: space-between; 
             gap: 16px;
-            min-width: 270px;
-            max-width: 300px;
-            flex-shrink: 0;
-            scroll-snap-align: start;
+            width: 100%;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
             transition: var(--spring-transition);
         }
@@ -400,6 +391,7 @@
         .search-box:focus { outline: none; border-color: var(--border-focus); background: var(--bg-elevated); }
         .search-box::placeholder { color: var(--text-muted); }
 
+        /* HORIZONTAL SCROLL ONLY FOR CATEGORY FILTER BUTTONS ON MOBILE */
         .filter-buttons-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; width: 100%; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .filter-buttons-scroll::-webkit-scrollbar { display: none; }
         
@@ -418,7 +410,7 @@
         .filter-btn:hover { color: var(--text-main); }
         .filter-btn.active { background: var(--text-main); color: #ffffff; font-weight: 600; }
 
-        /* Structured Grouped List System WITH RESPONSIVE OVERFLOW HORIZONTAL SCROLL */
+        /* Structured Grouped List System WITH RESPONSIVE OVERFLOW HORIZONTAL SCROLL FOR TABLE DATA */
         .table-container { 
             width: 100%; 
             overflow-x: auto; 
@@ -500,15 +492,12 @@
 
             .calculator-layout { display: grid; grid-template-columns: 1fr 380px; gap: 32px; align-items: start; }
             
-            /* Revert horizontal flex scroll layout back into standard grid on grid views */
+            /* Revert vertical flow to multi-column desktop matrix grid grid layout */
             .robbery-grid { 
                 display: grid; 
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
                 gap: 16px; 
-                overflow-x: visible;
-                padding: 0;
             }
-            .card { max-width: none; min-width: 0; }
             
             /* Reposition summary sheet block into a clean matching card block */
             .basket-panel { 
@@ -573,7 +562,7 @@
                 <!-- Charge Sheet Tab Panel -->
                 <div id="charge-sheet" class="tab-content active">
                     <div class="calculator-layout">
-                        <!-- Horizontal Scroll Containers for Mobile, Native Responsive Grids for Desktop -->
+                        <!-- Pure Vertical Preset List Architecture on Mobile Viewports -->
                         <div class="robbery-grid" id="robberyGrid"></div>
 
                         <!-- Optimized Booking Summary Bottom Sheet System -->
