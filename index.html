@@ -595,7 +595,7 @@
         let chargeSheetGroups = {};
         let penalCodes = {};
         let currentCategoryFilter = 'all';
-        let currentTab = 'charge-sheet'; // Keep track of the active tab view layout
+        let currentTab = 'charge-sheet'; 
         
         // GLOBAL CART STORAGE SYSTEM ENGINE
         let globalCart = [];
@@ -643,7 +643,7 @@
         }
 
         function switchTab(tabId) {
-            currentTab = tabId; // Update local state index
+            currentTab = tabId; 
             const sidebar = document.getElementById('sidebarMenu');
             if (sidebar.classList.contains('open')) toggleSidebar();
 
@@ -652,12 +652,10 @@
             
             document.getElementById(tabId).classList.add('active');
             
-            // Map side triggers active metrics
             if(tabId === 'charge-sheet') document.getElementById('btn-tab-charge-sheet').classList.add('active');
             if(tabId === 'penal-codes') document.getElementById('btn-tab-penal-codes').classList.add('active');
             if(tabId === 'booking-summary') document.getElementById('btn-tab-booking-summary').classList.add('active');
 
-            // Force dynamic assessment loop recalculations immediately upon navigation shifts
             updateCartUI();
         }
 
@@ -712,21 +710,43 @@
             }
         }
 
-        // CART ARCHITECTURE CORE FUNCTIONS
+        // DUPLICATION-PREVENTATIVE ENGINE CODES
         function addPresetToCart(groupKey) {
             const group = chargeSheetGroups[groupKey];
+            let duplicateFound = false;
+
             group.charges.forEach(charge => {
-                globalCart.push({
-                    label: charge.label,
-                    fine: charge.fine,
-                    jailTime: charge.jailTime
-                });
+                // Check if item's label is already present in global store array
+                const isDuplicate = globalCart.some(cartItem => cartItem.label.toLowerCase() === charge.label.toLowerCase());
+                
+                if (!isDuplicate) {
+                    globalCart.push({
+                        label: charge.label,
+                        fine: charge.fine,
+                        jailTime: charge.jailTime
+                    });
+                } else {
+                    duplicateFound = true;
+                }
             });
+
+            if (duplicateFound) {
+                alert("Notice: Duplicate charges within this preset were skipped automatically.");
+            }
             updateCartUI();
         }
 
         function addSingleCodeToCart(itemKey) {
             const item = penalCodes[itemKey];
+            
+            // Check if singular offense title matches inside global list array elements
+            const isDuplicate = globalCart.some(cartItem => cartItem.label.toLowerCase() === item.label.toLowerCase());
+
+            if (isDuplicate) {
+                alert(`The charge "${item.label}" has already been processed into the summary workspace.`);
+                return; // Stop execution stack loops completely
+            }
+
             globalCart.push({
                 label: item.label,
                 fine: item.fine === 999999 ? 0 : item.fine, 
@@ -752,14 +772,12 @@
 
             const floatBar = document.getElementById('floatingSummaryBar');
             
-            // CONDITION: Only display floating bar if layout contains items AND active viewport tab is NOT booking summary
             if (totalCount > 0 && window.innerWidth < 992 && currentTab !== 'booking-summary') {
                 floatBar.classList.add('visible');
             } else {
                 floatBar.classList.remove('visible');
             }
 
-            // Sync structural entries across Dedicated Workspace Worksheet
             const container = document.getElementById('workspaceCartItems');
             container.innerHTML = '';
 
@@ -786,7 +804,6 @@
                 });
             }
 
-            // Update running summary total calculations box
             document.getElementById('boxFine').innerText = `$${accumulatedFine.toLocaleString()}`;
             document.getElementById('boxTime').innerText = `${accumulatedTime} Months`;
             document.getElementById('boxGrandTotal').innerText = `$${accumulatedFine.toLocaleString()} & ${accumulatedTime} Months`;
