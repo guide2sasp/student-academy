@@ -7,29 +7,29 @@
     <link rel="icon" type="image/png" href="./assets/logo.jpg">
     <style>
         :root {
-            /* MUTED, DULL NATIVE iOS LIGHT PALETTE (Anti-Glare / Reduced Brightness) */
-            --bg-base: #e5e5ea;                 /* Muted, dull outer concrete background */
-            --bg-elevated: #f2f2f7;             /* Soft, off-white card/container background */
-            --bg-grouped: #e5e5ea;              
-            --bg-pill: #d1d1d6;                 
+            /* ANTI-EYE-STRAIN MATTE WARM PALETTE (No Harsh Lights, Paper Finish) */
+            --bg-base: #ecece7;                 /* Muted warm cement background */
+            --bg-elevated: #f4f4f0;             /* Dull warm paper container background */
+            --bg-grouped: #e4e4dc;              
+            --bg-pill: #dadad0;                 
             
-            --text-main: #1c1c1e;               /* Deep charcoal instead of pure striking black */
-            --text-secondary: #48484a;          
-            --text-muted: #8e8e93;              
+            --text-main: #2c2c2e;               /* Muted charcoal instead of striking black */
+            --text-secondary: #5a5a5e;          
+            --text-muted: #8a8a8f;              
             
-            /* INTERACTIVE ACCENTS WITH BALANCED SATURATION */
-            --accent: #007aff;                  
-            --accent-bg: rgba(0, 122, 255, 0.08); 
-            --accent-glow: rgba(0, 122, 255, 0.12);
+            /* HIGH-READABILITY MATTE ACCENTS (Slightly desaturated to preserve contrast without glare) */
+            --accent: #0066cc;                  
+            --accent-bg: rgba(0, 102, 204, 0.08); 
+            --accent-glow: rgba(0, 102, 204, 0.12);
             --border-color: rgba(0, 0, 0, 0.08);
-            --border-focus: rgba(0, 122, 255, 0.4);
+            --border-focus: rgba(0, 102, 204, 0.4);
 
-            --success-bg: rgba(52, 199, 89, 0.12);
-            --success-text: #248a3d;
-            --warning-bg: rgba(255, 149, 0, 0.12);
-            --warning-text: #b26a00;
-            --danger-bg: rgba(255, 59, 48, 0.12);
-            --danger-text: #d32f2f;
+            --success-bg: rgba(40, 167, 69, 0.12);
+            --success-text: #1e7e34;
+            --warning-bg: rgba(230, 126, 34, 0.12);
+            --warning-text: #a0520d;
+            --danger-bg: rgba(214, 48, 49, 0.12);
+            --danger-text: #b31d1d;
 
             /* Advanced Dimensioning & Uniform Radii */
             --sidebar-width: 300px;
@@ -43,7 +43,7 @@
             --spring-transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.02);
             --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.04);
-            --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.05);
         }
 
         * { 
@@ -83,7 +83,7 @@
             width: 48px;
             height: 48px;
             position: relative;
-            background: rgba(0, 122, 255, 0.03);
+            background: rgba(0, 102, 204, 0.03);
             border: 1.5px solid var(--border-color);
             border-radius: 50%;
         }
@@ -123,7 +123,7 @@
         
         /* Translucent Off-White Header Bar */
         header { 
-            background-color: rgba(242, 242, 247, 0.8);
+            background-color: rgba(244, 244, 240, 0.85);
             backdrop-filter: blur(20px) saturate(190%);
             -webkit-backdrop-filter: blur(20px) saturate(190%);
             border-bottom: 1px solid var(--border-color); 
@@ -182,7 +182,7 @@
             width: 100%;
             height: auto;
             max-height: 55vh; 
-            background: rgba(242, 242, 247, 0.95);
+            background: rgba(244, 244, 240, 0.96);
             backdrop-filter: blur(30px) saturate(190%);
             -webkit-backdrop-filter: blur(30px) saturate(190%);
             border-top: 1px solid var(--border-color);
@@ -254,7 +254,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.15);
+            background: rgba(0, 0, 0, 0.12);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             z-index: 102;
@@ -308,7 +308,7 @@
             box-shadow: 0 2px 6px var(--accent-glow);
             transition: var(--spring-transition); 
         }
-        .btn-add:hover, .btn-action-cart:hover { background: #0066d6; }
+        .btn-add:hover, .btn-action-cart:hover { background: #0052a3; }
         .btn-add:active, .btn-action-cart:active { transform: scale(0.94); }
 
         .btn-action-cart.remove {
@@ -316,7 +316,7 @@
             color: var(--danger-text);
             box-shadow: none;
         }
-        .btn-action-cart.remove:hover { background: rgba(255, 59, 48, 0.2); }
+        .btn-action-cart.remove:hover { background: rgba(214, 48, 49, 0.2); }
 
         /* FIXED FLOATING BOOKING OVERLAY */
         .floating-summary-trigger {
@@ -341,7 +341,7 @@
         .floating-summary-trigger .title-label { font-weight: 600; font-size: 15px; }
         .floating-summary-trigger .action-badge { background: var(--accent); color: white; padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 700; }
 
-        /* IMMERSIVE BOOKING SUMMARY WORKSPACE WORK SHEET */
+        /* IMMERSIVE BOOKING SUMMARY WORKSPACE */
         .booking-workspace-container { display: flex; flex-direction: column; gap: 20px; }
         .summary-headline-card { background: var(--bg-elevated); padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
         .summary-headline-card h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
@@ -381,7 +381,7 @@
         /* Integrated Input Fields System */
         .filter-bar { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; width: 100%; }
         .search-box { 
-            background: rgba(0, 0, 0, 0.05); 
+            background: rgba(0, 0, 0, 0.04); 
             border: 1.5px solid transparent; 
             padding: 12px 16px; 
             border-radius: var(--radius-md); 
@@ -391,14 +391,14 @@
             font-weight: 500;
             transition: var(--spring-transition); 
         }
-        .search-box:focus { outline: none; border-color: var(--border-focus); background: var(--bg-elevated); box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.05); }
+        .search-box:focus { outline: none; border-color: var(--border-focus); background: var(--bg-elevated); box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.05); }
         .search-box::placeholder { color: var(--text-muted); }
 
         .filter-buttons-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; width: 100%; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .filter-buttons-scroll::-webkit-scrollbar { display: none; }
         
         .filter-btn { 
-            background: rgba(0, 0, 0, 0.05); 
+            background: rgba(0, 0, 0, 0.04); 
             border: none; 
             color: var(--text-secondary); 
             padding: 8px 16px; 
@@ -409,7 +409,7 @@
             white-space: nowrap; 
             transition: var(--spring-transition); 
         }
-        .filter-btn:hover { color: var(--text-main); background: rgba(0, 0, 0, 0.08); }
+        .filter-btn:hover { color: var(--text-main); background: rgba(0, 0, 0, 0.06); }
         .filter-btn.active { background: var(--accent); color: #ffffff; box-shadow: 0 2px 8px var(--accent-glow); }
 
         /* Directory Matrix Table Infrastructure */
