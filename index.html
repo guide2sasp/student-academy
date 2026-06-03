@@ -513,7 +513,7 @@
                     <button class="tab-btn active" id="btn-tab-charge-sheet" onclick="switchTab('charge-sheet')">Charge Sheet</button>
                     <button class="tab-btn" id="btn-tab-penal-codes" onclick="switchTab('penal-codes')">Penal Codes Directory</button>
                     <button class="tab-btn" id="btn-tab-booking-summary" onclick="switchTab('booking-summary')">
-                        Booking Workspace <span class="badge-count" id="globalCartBadge">0</span>
+                        Booking Summary <span class="badge-count" id="globalCartBadge">0</span>
                     </button>
                 </div>
             </nav>
@@ -669,7 +669,7 @@
                 card.innerHTML = `
                     <div>
                         <h3>${group.label}</h3>
-                        <div class="card-meta">System Max: $${group.capFine.toLocaleString()} / ${group.capTime} Mos</div>
+                        <div class="card-meta">System Max: $${group.capFine.toLocaleString()} / ${group.capTime} Months</div>
                     </div>
                     <div class="card-actions">
                         <span style="font-size:12px; color:var(--text-secondary); font-weight:500;">Linked Crimes: ${group.charges.length}</span>
@@ -693,7 +693,7 @@
 
                 let readableCategory = item.category.replace('_', ' ');
                 let fineDisplay = item.fine === 999999 ? "Judicial Discretion" : `$${item.fine.toLocaleString()}`;
-                let jailDisplay = item.jailTime === 999999 || item.jailTime === 9999999 || item.jailTime === 99999999 ? "H.U.T" : `${item.jailTime} Mos`;
+                let jailDisplay = item.jailTime === 999999 || item.jailTime === 9999999 || item.jailTime === 99999999 ? "H.U.T" : `${item.jailTime} Months`;
 
                 tr.innerHTML = `
                     <td style="font-weight:600; color:var(--text-main); font-size:15px; letter-spacing:-0.2px;">${item.label}</td>
@@ -785,7 +785,7 @@
             // Update running summary total calculations box
             document.getElementById('boxFine').innerText = `$${accumulatedFine.toLocaleString()}`;
             document.getElementById('boxTime').innerText = `${accumulatedTime} Months`;
-            document.getElementById('boxGrandTotal').innerText = `$${accumulatedFine.toLocaleString()} & ${accumulatedTime} Mos`;
+            document.getElementById('boxGrandTotal').innerText = `$${accumulatedFine.toLocaleString()} & ${accumulatedTime} Months`;
         }
 
         function filterCategory(category, element) {
