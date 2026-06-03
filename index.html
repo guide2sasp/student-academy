@@ -595,6 +595,7 @@
         let chargeSheetGroups = {};
         let penalCodes = {};
         let currentCategoryFilter = 'all';
+        let currentTab = 'charge-sheet'; // Keep track of the active tab view layout
         
         // GLOBAL CART STORAGE SYSTEM ENGINE
         let globalCart = [];
@@ -642,6 +643,7 @@
         }
 
         function switchTab(tabId) {
+            currentTab = tabId; // Update local state index
             const sidebar = document.getElementById('sidebarMenu');
             if (sidebar.classList.contains('open')) toggleSidebar();
 
@@ -654,6 +656,9 @@
             if(tabId === 'charge-sheet') document.getElementById('btn-tab-charge-sheet').classList.add('active');
             if(tabId === 'penal-codes') document.getElementById('btn-tab-penal-codes').classList.add('active');
             if(tabId === 'booking-summary') document.getElementById('btn-tab-booking-summary').classList.add('active');
+
+            // Force dynamic assessment loop recalculations immediately upon navigation shifts
+            updateCartUI();
         }
 
         function renderChargeSheetGrid() {
@@ -724,7 +729,7 @@
             const item = penalCodes[itemKey];
             globalCart.push({
                 label: item.label,
-                fine: item.fine === 999999 ? 0 : item.fine, // Handle Discretion safely
+                fine: item.fine === 999999 ? 0 : item.fine, 
                 jailTime: (item.jailTime === 999999 || item.jailTime === 9999999) ? 0 : item.jailTime
             });
             updateCartUI();
@@ -741,13 +746,14 @@
         }
 
         function updateCartUI() {
-            // Badges counter elements metrics configuration
             const totalCount = globalCart.length;
             document.getElementById('globalCartBadge').innerText = totalCount;
             document.getElementById('floatingCartBadge').innerText = totalCount;
 
             const floatBar = document.getElementById('floatingSummaryBar');
-            if (totalCount > 0 && window.innerWidth < 992) {
+            
+            // CONDITION: Only display floating bar if layout contains items AND active viewport tab is NOT booking summary
+            if (totalCount > 0 && window.innerWidth < 992 && currentTab !== 'booking-summary') {
                 floatBar.classList.add('visible');
             } else {
                 floatBar.classList.remove('visible');
