@@ -550,6 +550,8 @@
                     <button class="tab-btn active" id="btn-tab-charge-sheet" onclick="switchTab('charge-sheet')">Charge Sheet</button>
                     <button class="tab-btn" id="btn-tab-booking-summary" onclick="switchTab('booking-summary')">Booking Summary <span class="badge-count" id="globalCartBadge">0</span></button>
                     <button class="tab-btn" id="btn-tab-penal-codes" onclick="switchTab('penal-codes')">Penal Codes Directory</button>
+                    <button class="tab-btn" id="btn-tab-ui-training" onclick="switchTab('ui-training')">UI Training</button>
+                    <button class="tab-btn" id="btn-tab-sop-training" onclick="switchTab('sop-training')">SOP Training</button>
                 </div>
             </nav>
 
@@ -615,6 +617,20 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="ui-training" class="tab-content">
+                    <div class="video-wrapper">
+                        <iframe src="YOUR_UI_YOUTUBE_EMBED_URL_HERE" title="UI Training Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div id="sop-training" class="tab-content">
+                    <div class="video-wrapper">
+                        <iframe src="YOUR_SOP_YOUTUBE_EMBED_URL_HERE" title="SOP Training Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+
             </main>
 
             <div class="floating-summary-trigger" id="floatingSummaryBar" onclick="switchTab('booking-summary')">
