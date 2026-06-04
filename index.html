@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Virtual MDT</title>
-    <link rel="icon" type="image/png" href="./assets/logo.png">
+    <link rel="icon" type="image/png" href="./assets/logo.jpg">
     <style>
         :root {
             /* CRISP YET SOFT iOS INTERMEDIATE LIGHT PALETTE */
-            --bg-base: #f2f2f7;                 /* Premium light gray canvas (removes harsh white glare) */
-            --bg-elevated: #ffffff;             /* Clean white cards to keep the UI feeling sharp */
+            --bg-base: #f2f2f7;                 
+            --bg-elevated: #ffffff;             
             --bg-grouped: #f9f9fb;              
             --bg-pill: #e5e5ea;                 
             
-            --text-main: #1c1c1e;               /* Soft charcoal black for high contrast without eye strain */
+            --text-main: #1c1c1e;               
             --text-secondary: #3a3a3c;          
             --text-muted: #8e8e93;              
             
@@ -33,7 +33,7 @@
 
             /* Advanced Dimensioning & Uniform Radii */
             --sidebar-width: 300px;
-            --top-nav-height: 64px;
+            --top-nav-height: 140px; /* Increased to allow vertical layout on mobile */
             --radius-xl: 24px;
             --radius-lg: 16px;
             --radius-md: 12px;
@@ -121,36 +121,47 @@
             min-height: 100vh;
         }
         
-        /* Fixed Translucent iOS Header Bar */
+        /* Fixed Translucent iOS Header Bar - Mobile */
         header { 
             background-color: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px) saturate(190%);
             -webkit-backdrop-filter: blur(20px) saturate(190%);
             border-bottom: 1px solid var(--border-color); 
-            padding: 0 24px; 
+            padding: 16px 24px; 
             display: flex; 
+            flex-direction: column;
             align-items: center; 
-            justify-content: space-between;
+            justify-content: center;
             position: fixed;
             top: 0; left: 0; right: 0;
             height: var(--top-nav-height);
             z-index: 100;
+            gap: 8px;
         }
+        
+        /* Brand Group Layout for Centered Stack */
+        .brand-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 8px;
+        }
+
         header h1 { 
             font-size: 18px; 
             font-weight: 700; 
             letter-spacing: -0.4px;
             color: var(--text-main); 
-            display: flex;
-            align-items: center;
-            gap: 12px;
         }
 
+        /* Large Centered Logo Configuration */
         .mdt-logo {
-            width: 28px;
-            height: 28px;
+            width: 64px;
+            height: 64px;
             object-fit: contain;
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-md);
         }
 
         .menu-toggle {
@@ -162,7 +173,9 @@
             flex-direction: column;
             gap: 5px;
             padding: 12px;
-            margin-right: -12px;
+            position: absolute;
+            right: 12px;
+            top: 24px;
             z-index: 110;
         }
         .menu-toggle span {
@@ -318,7 +331,7 @@
         }
         .btn-action-cart.remove:hover { background: rgba(255, 59, 48, 0.2); }
 
-        /* FIXED FLOATING BOOKING OVERLAY TO INSTANTLY JUMP PAGES */
+        /* FIXED FLOATING BOOKING OVERLAY */
         .floating-summary-trigger {
             position: fixed;
             bottom: 24px; left: 20px; right: 20px;
@@ -341,7 +354,7 @@
         .floating-summary-trigger .title-label { font-weight: 600; font-size: 15px; }
         .floating-summary-trigger .action-badge { background: var(--accent); color: white; padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 700; }
 
-        /* IMMERSIVE BOOKING SUMMARY WORKSPACE WORK SHEET */
+        /* IMMERSIVE BOOKING SUMMARY WORKSPACE */
         .booking-workspace-container { display: flex; flex-direction: column; gap: 20px; }
         .summary-headline-card { background: var(--bg-elevated); padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
         .summary-headline-card h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
@@ -438,7 +451,7 @@
         .menu-toggle.open span:nth-child(2) { opacity: 0; transform: scale(0); }
         .menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); width: 20px; }
 
-        /* WIDESCREEN DESKTOP SYSTEM WORKSPACE PANELS (>= 992px) */
+        /* WIDESCREEN DESKTOP WORKSPACE PANELS (>= 992px) */
         @media (min-width: 992px) {
             header { display: none; }
             .menu-toggle { display: none; }
@@ -452,9 +465,29 @@
                 border-radius: 0; background: var(--bg-elevated); padding: 0; box-shadow: none;
             }
             .sidebar::before { display: none; }
-            .sidebar-header { display: block; padding: 36px 28px 24px 28px; text-align: left; }
-            .sidebar-header h1 { font-size: 22px; justify-content: flex-start; letter-spacing: -0.5px; }
-            .mdt-logo { width: 32px; height: 32px; }
+            
+            /* Center elements horizontally inside sidebar header */
+            .sidebar-header { 
+                display: block; 
+                padding: 40px 24px 28px 24px; 
+                text-align: center; 
+            }
+            .sidebar-header .brand-group {
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            .sidebar-header h1 { 
+                font-size: 22px; 
+                letter-spacing: -0.5px; 
+                margin-top: 12px;
+            }
+            
+            /* Enhanced Logo Size on Deskstop Workspace layout */
+            .sidebar-header .mdt-logo { 
+                width: 90px; 
+                height: 90px; 
+            }
 
             .nav-menu { padding: 10px 18px; gap: 8px; flex: 1; }
             .tab-btn { background: transparent; padding: 12px 18px; font-size: 15px; text-align: left; border-radius: var(--radius-md); color: var(--text-secondary); justify-content: space-between; }
@@ -487,10 +520,10 @@
     <div id="mainAppContent">
         <div class="app-container">
             <header>
-                <h1>
-                    <img src="./assets/logo.png" alt="MDT Logo" class="mdt-logo">
-                    Virtual MDT
-                </h1>
+                <div class="brand-group">
+                    <img src="./assets/logo.jpg" alt="MDT Logo" class="mdt-logo">
+                    <h1>Virtual MDT</h1>
+                </div>
                 <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
                     <span></span>
                     <span></span>
@@ -502,10 +535,10 @@
             
             <nav class="sidebar" id="sidebarMenu">
                 <div class="sidebar-header">
-                    <h1>
-                        <img src="./assets/logo.png" alt="MDT Logo" class="mdt-logo">
-                        Virtual MDT
-                    </h1>
+                    <div class="brand-group">
+                        <img src="./assets/logo.jpg" alt="MDT Logo" class="mdt-logo">
+                        <h1>Virtual MDT</h1>
+                    </div>
                 </div>
                 <div class="nav-menu">
                     <button class="tab-btn active" id="btn-tab-charge-sheet" onclick="switchTab('charge-sheet')">Charge Sheet</button>
