@@ -725,6 +725,8 @@
 
         // CONTROL TAB INDEX ACTIONS EXECUTION STACK
         function switchTab(tabId) {
+            tabSwitchPauseIFrame();
+
             currentTab = tabId; 
             const sidebar = document.getElementById('sidebarMenu');
             if (sidebar.classList.contains('open')) toggleSidebar();
@@ -939,6 +941,21 @@
                 }
             });
         }
+
+        function tabSwitchPauseIFrame() {
+        const iframes = document.querySelectorAll('main iframe');
+        
+        iframes.forEach(iframe => {
+            try {
+                iframe.contentWindow.postMessage(
+                    JSON.stringify({ event: 'command', func: 'pauseVideo' }), 
+                    '*'
+                );
+            } catch (error) {
+                console.error("IFrame execution state pause error:", error);
+            }
+        });
+    }
     </script>
 </body>
 </html>
