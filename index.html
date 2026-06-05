@@ -574,6 +574,7 @@
                     <button class="tab-btn active" id="btn-tab-charge-sheet" onclick="switchTab('charge-sheet')">Charge Sheet</button>
                     <button class="tab-btn" id="btn-tab-booking-summary" onclick="switchTab('booking-summary')">Booking Summary <span class="badge-count" id="globalCartBadge">0</span></button>
                     <button class="tab-btn" id="btn-tab-penal-codes" onclick="switchTab('penal-codes')">Penal Codes Directory</button>
+                    <button class="tab-btn" id="btn-tab-ten-codes" onclick="switchTab('ten-codes')">Radio Codes</button>
                     <button class="tab-btn" id="btn-tab-ui-training" onclick="switchTab('ui-training')">UI Training</button>
                     <button class="tab-btn" id="btn-tab-sop-training" onclick="switchTab('sop-training')">SOP Training</button>
                     <button class="tab-btn" id="btn-tab-field-training" onclick="switchTab('field-training')">Field Training</button>
@@ -643,6 +644,51 @@
                     </div>
                 </div>
 
+                <div id="ten-codes" class="tab-content">
+                    <div class="filter-bar">
+                        <!-- Dropdown for categories -->
+                        <select id="radioCodeCategory" class="search-box" style="margin-bottom: 4px;" onchange="changeRadioCategory()">
+                            <option value="10-CODES">10-Codes</option>
+                            <option value="ROUTINE-CODES">Routine Codes</option>
+                            <option value="COLOR-CODES">Color Codes</option>
+                        </select>
+                        
+                        <!-- Search and Shuffle -->
+                        <div style="display: flex; gap: 12px; width: 100%;">
+                            <input type="text" id="radioSearchBox" class="search-box" placeholder="Search codes or meanings..." oninput="applyRadioFilters()">
+                            <button class="btn-add" style="border-radius: var(--radius-md);" onclick="shuffleRadioCodes()">Shuffle</button>
+                        </div>
+
+                        <!-- Priority Filters (Only visible for 10-CODES) -->
+                        <div class="filter-buttons-scroll" id="priorityFilters">
+                            <button class="filter-btn active" onclick="filterRadioPriority('all', this)">All Priorities</button>
+                            <button class="filter-btn" onclick="filterRadioPriority('Low', this)">Low</button>
+                            <button class="filter-btn" onclick="filterRadioPriority('Routine', this)">Routine</button>
+                            <button class="filter-btn" onclick="filterRadioPriority('Medium', this)">Medium</button>
+                            <button class="filter-btn" onclick="filterRadioPriority('High', this)">High</button>
+                            <button class="filter-btn" onclick="filterRadioPriority('Communication', this)">Communication</button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 20%">Code</th>
+                                    <th style="width: 50%">Meaning</th>
+                                    <th style="width: 15%" class="radio-extra-col">Color</th>
+                                    <th style="width: 15%" class="radio-extra-col">Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody id="radioCodesTableBody">
+                                <tr>
+                                    <td colspan="4" style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 30px 0;">Loading radio codes...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <div id="ui-training" class="tab-content">
                     <div class="video-wrapper">
                         <iframe src="https://www.youtube.com/embed/XpHMtT885Io?si=6chaM4tVL7wNb-BW" title="UI Training Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
@@ -681,6 +727,11 @@
         let globalCart = [];
         const CMS_DEFAULT_VALUE = 5;
 
+        let radioCodesData = {};
+        let activeRadioCodes = [];
+        let currentRadioCategory = '10-CODES';
+        let currentPriorityFilter = 'all';
+
         const getBaseUrl = () => {
             if (window.location.hostname.includes("github.io")) {
                 return "https://ayazpatel.github.io/SCRP-VIRTUAL-MDT/";
@@ -693,17 +744,20 @@
             try {
                 const [chargesResponse, penalCodesResponse] = await Promise.all([
                     fetch(`${baseUrl}chargesPresets.json`),
-                    fetch(`${baseUrl}penalCodes.json`)
+                    fetch(`${baseUrl}penalCodes.json`),
+                    fetch(`${baseUrl}radioCodes.json`),
                 ]);
 
                 if (!chargesResponse.ok || !penalCodesResponse.ok) throw new Error("HTTP verification failed.");
 
                 chargeSheetGroups = await chargesResponse.json();
                 penalCodes = await penalCodesResponse.json();
+                radioCodesData = await radioCodesResponse.json();
 
                 renderChargeSheetGrid();
                 renderPenalCodesTable();
                 updateCartUI();
+                changeRadioCategory();
 
                 const preloader = document.getElementById('appPreloader');
                 const content = document.getElementById('mainAppContent');
@@ -739,8 +793,10 @@
             if(tabId === 'charge-sheet') document.getElementById('btn-tab-charge-sheet').classList.add('active');
             if(tabId === 'penal-codes') document.getElementById('btn-tab-penal-codes').classList.add('active');
             if(tabId === 'booking-summary') document.getElementById('btn-tab-booking-summary').classList.add('active');
+            if(tabId === 'ten-codes') document.getElementById('btn-tab-ten-codes').classList.add('active');
             if(tabId === 'ui-training') document.getElementById('btn-tab-ui-training').classList.add('active');
             if(tabId === 'sop-training') document.getElementById('btn-tab-sop-training').classList.add('active');
+            
 
             updateCartUI();
         }
@@ -942,6 +998,105 @@
             });
         }
 
+        // --- RADIO CODES LOGIC ---
+
+        function changeRadioCategory() {
+            currentRadioCategory = document.getElementById('radioCodeCategory').value;
+            const priorityFilters = document.getElementById('priorityFilters');
+            const extraCols = document.querySelectorAll('.radio-extra-col');
+            
+            // Only show Priority filters and extra columns if 10-CODES is selected
+            if (currentRadioCategory === '10-CODES') {
+                priorityFilters.style.display = 'flex';
+                extraCols.forEach(col => col.style.display = '');
+            } else {
+                priorityFilters.style.display = 'none';
+                extraCols.forEach(col => col.style.display = 'none');
+            }
+            
+            // Reset filters on category change
+            document.getElementById('radioSearchBox').value = '';
+            filterRadioPriority('all', document.querySelector('#priorityFilters .filter-btn'));
+        }
+
+        function filterRadioPriority(priority, element) {
+            if (element) {
+                document.querySelectorAll('#priorityFilters .filter-btn').forEach(btn => btn.classList.remove('active'));
+                element.classList.add('active');
+            }
+            currentPriorityFilter = priority;
+            applyRadioFilters();
+        }
+
+        function applyRadioFilters() {
+            const query = document.getElementById('radioSearchBox').value.toLowerCase();
+            // Default to empty array if category doesn't exist yet
+            let data = radioCodesData[currentRadioCategory] || []; 
+            
+            activeRadioCodes = data.filter(item => {
+                const matchesSearch = item.code.toLowerCase().includes(query) || item.meaning.toLowerCase().includes(query);
+                
+                let matchesPriority = true;
+                if (currentRadioCategory === '10-CODES' && currentPriorityFilter !== 'all') {
+                    matchesPriority = item.priority === currentPriorityFilter;
+                }
+                
+                return matchesSearch && matchesPriority;
+            });
+            
+            renderRadioTable();
+        }
+
+        function shuffleRadioCodes() {
+            // Fisher-Yates Shuffle algorithm
+            for (let i = activeRadioCodes.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [activeRadioCodes[i], activeRadioCodes[j]] = [activeRadioCodes[j], activeRadioCodes[i]];
+            }
+            renderRadioTable();
+        }
+
+        function renderRadioTable() {
+            const tbody = document.getElementById('radioCodesTableBody');
+            tbody.innerHTML = '';
+            
+            if (activeRadioCodes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 30px 0;">No matching codes found.</td></tr>`;
+                return;
+            }
+
+            activeRadioCodes.forEach(item => {
+                const tr = document.createElement('tr');
+                let extraHTML = '';
+                
+                // Only inject Color and Priority cells if we are in the 10-CODES category
+                if (currentRadioCategory === '10-CODES') {
+                    extraHTML = `
+                        <td style="font-weight:600; color: ${getColorForRadio(item.color)}">${item.color}</td>
+                        <td><span class="badge" style="background: var(--bg-pill); color: var(--text-main);">${item.priority}</span></td>
+                    `;
+                }
+                
+                tr.innerHTML = `
+                    <td style="font-weight:700; color:var(--accent); font-size:15px;">${item.code}</td>
+                    <td style="font-weight:500; color:var(--text-main); font-size:14px;">${item.meaning}</td>
+                    ${extraHTML}
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Helper function to map JSON color strings to actual CSS colors
+        function getColorForRadio(colorName) {
+            const map = {
+                "Green": "#248a3d",
+                "Pink": "#ff2d55",
+                "White": "var(--text-secondary)",
+                "Yellow": "#b26a00",
+                "Red": "#d32f2f"
+            };
+            return map[colorName] || "var(--text-main)";
+        }
 
         // TODO: need a fix for it
         function tabSwitchPauseIFrame() {
