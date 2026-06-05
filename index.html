@@ -739,25 +739,65 @@
             return "./"; 
         };
 
+        // window.onload = async function() {
+        //     const baseUrl = getBaseUrl();
+        //     try {
+        //         const [chargesResponse, penalCodesResponse] = await Promise.all([
+        //             fetch(`${baseUrl}chargesPresets.json`),
+        //             fetch(`${baseUrl}penalCodes.json`),
+        //             fetch(`${baseUrl}radioCodes.json`),
+        //         ]);
+
+        //         if (!chargesResponse.ok || !penalCodesResponse.ok) throw new Error("HTTP verification failed.");
+
+        //         chargeSheetGroups = await chargesResponse.json();
+        //         penalCodes = await penalCodesResponse.json();
+        //         radioCodesData = await radioCodesResponse.json();
+
+        //         renderChargeSheetGrid();
+        //         renderPenalCodesTable();
+        //         updateCartUI();
+        //         changeRadioCategory();
+
+        //         const preloader = document.getElementById('appPreloader');
+        //         const content = document.getElementById('mainAppContent');
+        //         preloader.style.opacity = '0';
+        //         preloader.style.visibility = 'hidden';
+        //         content.style.opacity = '1';
+        //     } catch (error) {
+        //         console.error("Data Fetch Error:", error);
+        //         document.getElementById('preloaderText').innerText = `Sync Failed: ${error.message}`;
+        //         document.getElementById('preloaderText').style.color = 'var(--danger-text)';
+        //     }
+        // };
+
         window.onload = async function() {
             const baseUrl = getBaseUrl();
             try {
-                const [chargesResponse, penalCodesResponse] = await Promise.all([
+                // 1. THIS LINE MUST INCLUDE radioCodesResponse
+                const [chargesResponse, penalCodesResponse, radioCodesResponse] = await Promise.all([
                     fetch(`${baseUrl}chargesPresets.json`),
                     fetch(`${baseUrl}penalCodes.json`),
-                    fetch(`${baseUrl}radioCodes.json`),
+                    fetch(`${baseUrl}radioCodes.json`) // 2. THIS LINE MUST FETCH THE NEW JSON
                 ]);
 
-                if (!chargesResponse.ok || !penalCodesResponse.ok) throw new Error("HTTP verification failed.");
+                // 3. THIS LINE MUST CHECK ALL THREE FOR .ok
+                if (!chargesResponse.ok || !penalCodesResponse.ok || !radioCodesResponse.ok) {
+                    throw new Error("HTTP verification failed.");
+                }
 
                 chargeSheetGroups = await chargesResponse.json();
                 penalCodes = await penalCodesResponse.json();
-                radioCodesData = await radioCodesResponse.json();
+                radioCodesData = await radioCodesResponse.json(); // 4. NOW THIS WILL WORK
 
                 renderChargeSheetGrid();
                 renderPenalCodesTable();
                 updateCartUI();
-                changeRadioCategory();
+                
+                // Initialize Radio Codes tab
+                if (typeof changeRadioCategory === "function") {
+                    changeRadioCategory(); 
+                }
 
                 const preloader = document.getElementById('appPreloader');
                 const content = document.getElementById('mainAppContent');
