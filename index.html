@@ -190,7 +190,7 @@
         }
 
         /* Navigation Drawer Layout Framework */
-        .sidebar {
+        /* .sidebar {
             position: fixed;
             bottom: 0; left: 0; right: 0;
             transform: translateY(100%);
@@ -208,6 +208,28 @@
             box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.04);
             transition: var(--spring-transition);
             padding-bottom: env(safe-area-inset-bottom);
+        } */
+        .sidebar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            transform: translateY(100%);
+            width: 100%;
+            height: auto;
+            max-height: 55vh;
+            background: rgba(255,255,255,0.94);
+            backdrop-filter: blur(30px) saturate(190%);
+            -webkit-backdrop-filter: blur(30px) saturate(190%);
+            border-top: 1px solid var(--border-color);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 105;
+            box-shadow: 0 -10px 40px rgba(0,0,0,.04);
+            transition: var(--spring-transition);
+            padding-bottom: env(safe-area-inset-bottom);
         }
         .sidebar.open { transform: translateY(0); }
         .sidebar::before {
@@ -221,9 +243,16 @@
         }
 
         /* Mobile Sidebar Header Style Reset */
+        /* .sidebar-header {
+            padding: 0 24px 16px 24px;
+            text-align: left;
+        } */
         .sidebar-header {
             padding: 0 24px 16px 24px;
             text-align: left;
+            flex-shrink: 0;
+            background: inherit;
+            z-index: 5;
         }
         .sidebar-header .brand-group {
             display: flex;
@@ -236,11 +265,66 @@
             font-weight: 700;
         }
 
-        .nav-menu {
+        /* .nav-menu {
             padding: 0 24px 24px 24px;
             display: flex;
             flex-direction: column;
             gap: 10px;
+        } */
+        .nav-menu {
+            flex: 1;
+            padding: 0 24px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .nav-menu::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scroll-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 24px;
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            transition: .25s ease;
+        }
+        .scroll-indicator.show {
+            opacity: 1;
+        }
+        .scroll-indicator.top {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,.95),
+                transparent
+            );
+        }
+        .scroll-indicator.bottom {
+            background: linear-gradient(
+                to top,
+                rgba(255,255,255,.95),
+                transparent
+            );
+            animation: sidebarBounce 1.5s infinite;
+        }
+        @keyframes sidebarBounce {
+
+            0%,100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(4px);
+            }
         }
         .tab-btn {
             background: var(--bg-base);
@@ -570,6 +654,11 @@
                         <h1>SASP Student Academy</h1>
                     </div>
                 </div>
+                
+                <div class="scroll-indicator top" id="scrollTopIndicator">
+                    ▲
+                </div>
+                
                 <div class="nav-menu">
                     <button class="tab-btn active" id="btn-tab-charge-sheet" onclick="switchTab('charge-sheet')">Charge Sheet</button>
                     <button class="tab-btn" id="btn-tab-booking-summary" onclick="switchTab('booking-summary')">Booking Summary <span class="badge-count" id="globalCartBadge">0</span></button>
@@ -578,8 +667,26 @@
                     <button class="tab-btn" id="btn-tab-ui-training" onclick="switchTab('ui-training')">UI Training</button>
                     <button class="tab-btn" id="btn-tab-sop-training" onclick="switchTab('sop-training')">SOP Training</button>
                     <button class="tab-btn" id="btn-tab-field-training" onclick="switchTab('field-training')">Field Training</button>
+                    
+                    <button class="tab-btn">Sample Menu 01</button>
+                    <button class="tab-btn">Sample Menu 02</button>
+                    <button class="tab-btn">Sample Menu 03</button>
+                    <button class="tab-btn">Sample Menu 04</button>
+                    <button class="tab-btn">Sample Menu 05</button>
+                    <button class="tab-btn">Sample Menu 06</button>
+                    <button class="tab-btn">Sample Menu 07</button>
+                    <button class="tab-btn">Sample Menu 08</button>
+                    <button class="tab-btn">Sample Menu 09</button>
+                    <button class="tab-btn">Sample Menu 10</button>
+
                 </div>
+                
+                <div class="scroll-indicator bottom" id="scrollBottomIndicator">
+                    ▼
+                </div>
+
             </nav>
+
 
             <main>
                 <div id="charge-sheet" class="tab-content active">
@@ -1182,6 +1289,49 @@
             }
         });
     }
+
+        function updateSidebarIndicators() {
+
+            const navMenu = document.getElementById("navMenu");
+
+            if (!navMenu) return;
+
+            const topArrow =
+                document.getElementById("scrollTopIndicator");
+
+            const bottomArrow =
+                document.getElementById("scrollBottomIndicator");
+
+            const maxScroll =
+                navMenu.scrollHeight - navMenu.clientHeight;
+
+            topArrow.classList.toggle(
+                "show",
+                navMenu.scrollTop > 5
+            );
+
+            bottomArrow.classList.toggle(
+                "show",
+                navMenu.scrollTop < maxScroll - 5
+            );
+        }
+
+        window.addEventListener("load", () => {
+
+            const navMenu =
+                document.getElementById("navMenu");
+
+            if(navMenu){
+
+                updateSidebarIndicators();
+
+                navMenu.addEventListener(
+                    "scroll",
+                    updateSidebarIndicators
+                );
+            }
+        });
+
     </script>
 </body>
 </html>
